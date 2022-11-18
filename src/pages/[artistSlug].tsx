@@ -29,7 +29,7 @@ export default function HomePage({
         title={artist.name}
         openGraph={{
           type: 'website',
-          url: 'https://songstash.vercel.app/' + slug,
+          url: `${process.env.CANONICAL_URL}/${slug}`,
           title: `${artist.name} on songstash`,
           description: 'Open Graph Description',
           images: [

@@ -20,7 +20,8 @@ export async function middleware(request: NextRequest) {
 }
 
 function getBaseUrl() {
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  if (process.env.NODE_ENV !== 'development')
+    return `https://${process.env.CANONICAL_URL}`;
 
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
