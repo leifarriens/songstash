@@ -9,6 +9,7 @@
     "lint": "next lint",
     "format": "npx prettier ./src --write",
     "postinstall": "prisma generate",
+    "db:connect": "pscale connect songstash main --port 3309",
     "db:studio": "prisma studio",
     "db:push": "prisma db push"
   },

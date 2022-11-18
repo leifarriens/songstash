@@ -9,6 +9,7 @@ export async function middleware(request: NextRequest) {
   if (url.pathname.length === 23) {
     const baseUrl = getBaseUrl();
 
+    console.log(baseUrl);
     const res = await fetch(baseUrl + '/api/artists' + url.pathname);
 
     const json = await res.json();
@@ -20,8 +21,7 @@ export async function middleware(request: NextRequest) {
 }
 
 function getBaseUrl() {
-  if (process.env.NODE_ENV !== 'development')
-    return `https://${process.env.CANONICAL_URL}`;
+  if (process.env.NODE_ENV !== 'development') return process.env.CANONICAL_URL;
 
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }

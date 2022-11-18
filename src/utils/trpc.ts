@@ -5,8 +5,7 @@ import type { AppRouter } from '../server/routers/_app';
 function getBaseUrl() {
   if (typeof window !== 'undefined') return '';
 
-  if (process.env.NODE_ENV !== 'development')
-    return `https://${process.env.CANONICAL_URL}`;
+  if (process.env.NODE_ENV !== 'development') return process.env.CANONICAL_URL;
 
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
