@@ -3,7 +3,9 @@ module.exports = {
   content: ['./src/**/*.tsx'],
   theme: {
     extend: {
-      fontFamily: 'system-ui',
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
     },
   },
   plugins: [],

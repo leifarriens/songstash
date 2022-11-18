@@ -1,10 +1,21 @@
-// import '../styles/index.css';
-import '../styles/globals.scss';
+import '../styles/index.css';
+import { Inter } from '@next/font/google';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import type { AppProps } from 'next/app';
+const inter = Inter();
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+import type { AppType } from 'next/app';
+import { trpc } from '../utils/trpc';
 
-export default MyApp;
+const MyApp: AppType = ({ Component, pageProps }) => {
+  return (
+    <>
+      <div className={inter.className}>
+        <Component {...pageProps} />
+      </div>
+      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
+    </>
+  );
+};
+
+export default trpc.withTRPC(MyApp);
