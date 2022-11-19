@@ -1,26 +1,66 @@
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { artistInput, artistUrl } from '../../utils/validators';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
-export const Create = () => {
-  const [value, setValue] = useState('');
+export default function Create() {
+  const formRef = useRef<HTMLFormElement>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitted },
+  } = useForm<{ value: string }>({
+    resolver: zodResolver(
+      z.object({
+        value: artistInput,
+      }),
+    ),
+  });
+
+  const onSubmit: SubmitHandler<{ value: string }> = ({ value }) => {
+    // value is expected as valid url or valid id
+    if (!formRef.current) return;
+
+    const { success: isArtistUrl } = artistUrl.safeParse(value);
+
+    if (!isArtistUrl) {
+      formRef.current.action = '/' + value;
+      formRef.current.submit();
+      return;
+    }
+
+    const url = new URL(value);
+
+    formRef.current.action = '/' + url.pathname.split('/')[2];
+    formRef.current.submit();
+  };
 
   return (
-    <div className="flex justify-center my-10">
-      <form method="GET" action={`/${value}`} className="w-full flex max-w-lg">
+    <div className="sticky top-8 flex justify-center my-10 self-start">
+      <form
+        ref={formRef}
+        method="GET"
+        action="/"
+        className="text-center"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <input
-          className="w-full appearance-none border-2 border-transparent rounded-xl py-2 px-4 bg-neutral-800 bg-opacity-50"
+          tabIndex={0}
+          className="w-full backdrop-blur-md text-lg appearance-none rounded-xl border-2 border-transparent transition-colors py-3 px-6 bg-opacity-60 bg-neutral-800 text-center focus:bg-opacity-80 focus:border-gray-300 focus:outline-none"
           type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="Enter spotify artist id"
+          {...register('value')}
+          placeholder="Enter Spotify Artist URL or ID"
         />
         <button
           type="submit"
-          disabled={!value}
-          className="appearance-none border-2 border-white rounded py-2 px-4 textc ml-4 hover:bg-white hover:text-black disabled:opacity-60 disabled:pointer-events-none"
+          disabled={isSubmitted}
+          className="w-full sm:w-auto mt-6 font-medium text-base py-3 px-5 rounded-xl bg-gradient-to-r from-pink-600 to-pink-400 transition-colors disabled:opacity-70"
         >
-          Create
+          Create songstash
         </button>
       </form>
     </div>
   );
-};
+}
