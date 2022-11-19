@@ -15,9 +15,12 @@ export const Cover = ({ url, size, listener }: CoverProps) => {
 
   return (
     <div
-      key={url}
-      className="absolute transform-gpu duration-1000 ease-in-out animate-fadein"
+      className="absolute"
       style={{
+        transitionProperty: 'transform',
+        transitionDuration: `${randomFloatInterval(850, 1000, 1)}ms`,
+        transitionDelay: `${randomIntInterval(0, 150)}ms`,
+        transitionTimingFunction: 'ease-in-out',
         transform: translate,
       }}
     >
@@ -45,4 +48,10 @@ function getRandomScreenTranslate(size: WindowSize) {
 
 function randomIntInterval(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function randomFloatInterval(min: number, max: number, decimals: number) {
+  const str = (Math.random() * (max - min) + min).toFixed(decimals);
+
+  return parseFloat(str);
 }

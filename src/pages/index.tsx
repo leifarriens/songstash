@@ -70,7 +70,7 @@ export async function getStaticProps({}: GetStaticPropsContext) {
 
   const artists = await getMultipleArtists(dbEntries.map((a) => a.spotifyId));
 
-  const covers = artists.map((artist) => artist.images[2]);
+  const covers = artists.map((artist) => artist.images[2]).reverse();
 
   return {
     props: {
