@@ -27,11 +27,14 @@ export default function HomePage({
       </Head>
       <NextSeo
         title={artist.name}
+        twitter={{
+          cardType: 'summary_large_image',
+        }}
         openGraph={{
           type: 'website',
           url: `${process.env.CANONICAL_URL}/${slug}`,
           title: `${artist.name} on songstash`,
-          description: 'Open Graph Description',
+          description: `${artist.name} on songstash`,
           images: [
             {
               url: artist.images[1].url,
@@ -43,9 +46,9 @@ export default function HomePage({
         }}
       />
 
-      <main className="text-center pl-5 pr-5">
+      <main className="text-center px-5">
         <Artist artist={artist} albums={albums} />
-        <div className="my-8 text-xs text-slate-400">{timestamp}</div>
+        <div className="my-8 text-xs text-neutral-400">{timestamp}</div>
       </main>
     </>
   );
