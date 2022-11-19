@@ -18,15 +18,15 @@ export const Artist = ({ artist, albums }: ArtistProps) => {
 
   return (
     <div className="text-white">
-      <section id="info" className="mt-20 mb-20 pl-8 pr-8">
+      <section id="info" className="my-20 px-8">
         <div>
-          <div className="mt-28 mb-28">
+          <div className="my-28">
             <h1 className="text-4xl text-center font-bold text-white tracking-tight sm:text-6xl sm:tracking-tight lg:text-[4rem] xl:text-[6rem] 2xl:text-[6.5rem] xl:tracking-tight">
               {artist.name}
             </h1>
           </div>
 
-          <div className="flex justify-center mt-8 mb-8">
+          <div className="flex justify-center my-8">
             <img
               src={artistImage.url}
               height={artistImage.height}
@@ -51,7 +51,7 @@ export const Artist = ({ artist, albums }: ArtistProps) => {
 
         {releases.map((album) => {
           return (
-            <article key={album.id} className="mt-12 mb-12">
+            <article key={album.id} className="my-12">
               <div className="flex justify-center mb-4">
                 <a
                   href={album.external_urls.spotify}

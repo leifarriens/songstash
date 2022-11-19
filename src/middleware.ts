@@ -9,7 +9,6 @@ export async function middleware(request: NextRequest) {
   if (url.pathname.length === 23) {
     const baseUrl = getBaseUrl();
 
-    console.log(baseUrl);
     const res = await fetch(baseUrl + '/api/artists' + url.pathname);
 
     const json = await res.json();

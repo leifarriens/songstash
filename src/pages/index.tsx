@@ -1,10 +1,11 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { CoverWall } from '../modules/CoverWall';
 import { Create } from '../modules/Create';
 import { prisma } from '../server/db/client';
-import { getNewestArtists } from '../services';
+import { getMultipleArtists } from '../services';
+import { trpc } from '../utils/trpc';
 
 export default function HomePage({
   artists,
@@ -19,9 +20,9 @@ export default function HomePage({
         <title>Songstash</title>
       </Head>
 
-      <main>
+      <main pl-5 pr-5>
         <section className="flex justify-center items-center">
-          <div className="mt-80 mb-80">
+          <div className="my-80">
             <h1 className="text-4xl text-center tracking-tight font-bold text-white sm:text-6xl sm:tracking-tight lg:text-[4rem] xl:text-[6rem] 2xl:text-[6.5rem] xl:tracking-tight">
               Welcome to <span className="text-yellow-200">song</span>
               <span className="text-red-500">stash</span>
@@ -38,9 +39,16 @@ export default function HomePage({
 }
 
 export async function getStaticProps({}: GetStaticPropsContext) {
-  const dbEntries = await prisma.artist.findMany({});
+  const dbEntries = await prisma.artist.findMany({
+    take: 20,
+    orderBy: [
+      {
+        created_at: 'desc',
+      },
+    ],
+  });
 
-  const artists = await getNewestArtists(dbEntries.map((a) => a.spotifyId));
+  const artists = await getMultipleArtists(dbEntries.map((a) => a.spotifyId));
 
   return {
     props: {

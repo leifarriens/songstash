@@ -69,7 +69,7 @@ export async function getArtistAlbums(
   return albums;
 }
 
-export async function getNewestArtists(artistIds: string[]) {
+export async function getMultipleArtists(artistIds: string[]) {
   await getAccessToken();
 
   const { body } = await spotifyApi.getArtists(artistIds);

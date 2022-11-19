@@ -42,9 +42,10 @@ export default function HomePage({
           ],
         }}
       />
+
       <main className="text-center pl-5 pr-5">
         <Artist artist={artist} albums={albums} />
-        <div className="mt-8 mb-8 text-xs text-slate-400">{timestamp}</div>
+        <div className="my-8 text-xs text-slate-400">{timestamp}</div>
       </main>
     </>
   );

@@ -12,16 +12,16 @@ export const CoverWall = ({
 
   return (
     <div className="absolute inset-0 flex justify-center items-center -z-30 overflow-hidden">
-      {covers.map((cover) => (
+      {covers.reverse().map((cover) => (
         <div
           key={cover.url}
-          className="absolute"
+          className="absolute transition-transform duration-500 ease-out"
           style={{
             transform: getRandomScreenTranslate(size),
           }}
         >
           <img
-            className="aspect-square object-cover  blur-lg brightness-50"
+            className="aspect-square object-cover  blur-sm brightness-50"
             src={cover.url}
             alt=""
           />
@@ -64,9 +64,9 @@ function getRandomScreenTranslate(size: WindowSize) {
   }
 
   return `translate(${randomIntFromInterval(
-    (size.width / 2) * -1,
-    size.width / 2,
-  )}px, ${randomIntFromInterval((size.height / 2) * -1, size.height / 2)}px`;
+    (size.width / 3) * -1,
+    size.width / 3,
+  )}px, ${randomIntFromInterval((size.height / 4) * -1, size.height / 4)}px`;
 }
 
 function randomIntFromInterval(min: number, max: number) {

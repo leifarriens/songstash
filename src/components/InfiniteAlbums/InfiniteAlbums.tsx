@@ -35,7 +35,7 @@ export const InfiniteAlbums = ({
         <React.Fragment key={i}>
           {groupe.items.map((album) => {
             return (
-              <article key={album.id} className="mt-12 mb-12">
+              <article key={album.id} className="my-12">
                 <div className="flex justify-center mb-4">
                   <a
                     href={album.external_urls.spotify}
