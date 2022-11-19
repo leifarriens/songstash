@@ -1,10 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
+import dayjs from '../../lib/dayjs';
+import { capitalizeFirstLetter } from '../../utils/helpers';
+
 interface ArtistProps {
   artist: SpotifyApi.SingleArtistResponse;
   albums: SpotifyApi.ArtistsAlbumsResponse;
 }
-import dayjs from '../../lib/dayjs';
-import { capitalizeFirstLetter } from '../../utils/helpers';
 
 export const Artist = ({ artist, albums }: ArtistProps) => {
   const releases = albums.items.sort((a, b) => {
@@ -21,7 +21,7 @@ export const Artist = ({ artist, albums }: ArtistProps) => {
       <section id="info" className="my-20 px-8">
         <div>
           <div className="my-28">
-            <h1 className="text-4xl text-center font-bold text-white tracking-tight sm:text-6xl sm:tracking-tight lg:text-[4rem] xl:text-[6rem] 2xl:text-[6.5rem] xl:tracking-tight">
+            <h1 className="text-5xl text-center font-bold text-white tracking-tight sm:text-6xl sm:tracking-tight lg:text-[4rem] xl:text-[6rem] 2xl:text-[6.5rem] xl:tracking-tight">
               {artist.name}
             </h1>
           </div>
@@ -31,8 +31,7 @@ export const Artist = ({ artist, albums }: ArtistProps) => {
               src={artistImage.url}
               height={artistImage.height}
               alt={`${artist.name} Image`}
-              className="rounded-full aspect-square object-cover"
-              style={{ maxHeight: '420px' }}
+              className="rounded-full aspect-square object-cover max-h-96"
             />
           </div>
 
@@ -40,6 +39,7 @@ export const Artist = ({ artist, albums }: ArtistProps) => {
             {new Intl.NumberFormat('de-DE').format(artist.followers.total)}{' '}
             people following
           </div>
+
           <div className="text-sm text-slate-300">
             Latest Release: {dayjs(newestRelease.release_date).fromNow()}
           </div>
@@ -68,6 +68,9 @@ export const Artist = ({ artist, albums }: ArtistProps) => {
                   />
                 </a>
               </div>
+              <div className="text-center text-xs text-neutral-400">
+                {album.total_tracks} Tracks
+              </div>
               <h3 className="text-lg font-semibold">{album.name}</h3>
               <div className="text-xs text-slate-300">
                 <span>{album.release_date}</span>{' '}
@@ -77,6 +80,10 @@ export const Artist = ({ artist, albums }: ArtistProps) => {
             </article>
           );
         })}
+
+        <a href={artist.external_urls.spotify} rel="noreferrer" target="_blank">
+          More on spotify
+        </a>
       </section>
 
       <div

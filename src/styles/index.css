@@ -10,4 +10,17 @@
 
 body {
   background-color: #000;
+  color: #fff;
+}
+
+@layer components {
+  .text-gradient {
+    background: -webkit-linear-gradient(
+      var(--tw-gradient-from),
+      var(--tw-gradient-to)
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
