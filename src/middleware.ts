@@ -4,9 +4,11 @@ import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
+  const slug = url.pathname.replace('/', '');
 
-  // TODO: better spotifyId validator
-  if (url.pathname.length === 23) {
+  const idRegexp = /^[0-9a-zA-Z]{22}/gi;
+
+  if (idRegexp.test(slug)) {
     const baseUrl = getBaseUrl();
 
     const res = await fetch(baseUrl + '/api/artists' + url.pathname);

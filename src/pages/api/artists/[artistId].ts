@@ -27,7 +27,10 @@ export default async function handler(
 
   const { name, id } = await getArtist(artistId);
 
-  const slug = name.replaceAll(' ', '').toLocaleLowerCase();
+  const slug = name
+    .replaceAll('$', 's')
+    .replace(/[^\w\s]/gi, '')
+    .toLowerCase();
 
   const newArtist = await prisma.artist.create({
     data: { spotifyId: id, slug },
