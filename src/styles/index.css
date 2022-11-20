@@ -24,3 +24,25 @@ body {
     -webkit-text-fill-color: transparent;
   }
 }
+
+/* width */
+.scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.scrollbar::-webkit-scrollbar-track {
+  border-radius: 0.75rem;
+  background: #ddd;
+}
+
+/* Handle */
+.scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 0.75rem;
+  background: #888;
+}
+
+/* Handle on hover */
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
