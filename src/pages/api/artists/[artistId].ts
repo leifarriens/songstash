@@ -29,9 +29,11 @@ export default async function handler(
 
   const slug = name
     .replaceAll('$', 's')
+    .replaceAll(' ', '')
     .replace(/[^\w\s]/gi, '')
     .toLowerCase();
 
+  // TODO: handle artist slug duplicates
   const newArtist = await prisma.artist.create({
     data: { spotifyId: id, slug },
   });
