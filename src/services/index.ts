@@ -10,7 +10,7 @@ const spotifyApi = new SpotifyWebApi({
 export async function getAccessToken() {
   const currentToken = spotifyApi.getAccessToken();
 
-  // HACK: sould when when currentToken has expired
+  // HACK: should fail when when currentToken has expired
   if (currentToken) return;
 
   const token = await prisma.token.findFirst({
@@ -47,9 +47,12 @@ export async function getArtist(artistId: string) {
   return body;
 }
 
-interface GetArtistAlbumsOptions {
+interface GetPageOptions {
   limit?: number;
   offset?: number;
+}
+
+interface GetArtistAlbumsOptions extends GetPageOptions {
   country?: string;
 }
 
@@ -73,6 +76,22 @@ export async function getMultipleArtists(artistIds: string[]) {
   await getAccessToken();
 
   const { body } = await spotifyApi.getArtists(artistIds);
+
+  return body.artists;
+}
+
+export async function searchArtist(
+  query: string,
+  { limit = 20, offset = 0 }: GetPageOptions = {},
+) {
+  await getAccessToken();
+
+  const { body } = await spotifyApi.searchArtists(query, {
+    market: 'de',
+    include_external: 'audio',
+    limit,
+    offset,
+  });
 
   return body.artists;
 }

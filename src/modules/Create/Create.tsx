@@ -10,7 +10,7 @@ export default function Create() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitted },
+    formState: { isSubmitting },
   } = useForm<{ value: string }>({
     resolver: zodResolver(
       z.object({
@@ -47,7 +47,6 @@ export default function Create() {
         onSubmit={handleSubmit(onSubmit)}
       >
         <input
-          tabIndex={0}
           className="w-full backdrop-blur-md text-lg appearance-none rounded-xl border-2 border-transparent transition-colors py-3 px-6 bg-opacity-60 bg-neutral-800 text-center focus:bg-opacity-80 focus:border-gray-300 focus:outline-none"
           type="text"
           {...register('value')}
@@ -55,7 +54,7 @@ export default function Create() {
         />
         <button
           type="submit"
-          disabled={isSubmitted}
+          disabled={isSubmitting}
           className="w-full sm:w-auto mt-6 font-medium text-base py-3 px-5 rounded-xl bg-gradient-to-r from-pink-600 to-pink-400 transition-colors disabled:opacity-70"
         >
           Create songstash
