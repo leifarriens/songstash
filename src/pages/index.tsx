@@ -1,5 +1,4 @@
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
-import Head from 'next/head';
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { CoverWall } from '../modules/CoverWall';
@@ -8,7 +7,7 @@ import { getMultipleArtists } from '../services';
 import { Search } from '../modules/Search';
 import CountUp from 'react-countup';
 import { InView } from 'react-intersection-observer';
-import Image from 'next/image';
+import { NextSeo } from 'next-seo';
 
 const Create = dynamic(() => import('../modules/Create'), {
   ssr: false,
@@ -21,13 +20,20 @@ export default function HomePage({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
-      <Head>
-        <link
-          rel="icon"
-          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💽</text></svg>"
-        />
-        <title>Songstash</title>
-      </Head>
+      <NextSeo
+        description="Songstash is for quick and easy arrangement of Artist discography websites to connect with your audience"
+        title="Songstash"
+        twitter={{
+          cardType: 'summary_large_image',
+        }}
+        openGraph={{
+          type: 'website',
+          url: process.env.CANONICAL_URL,
+          title: 'Songstash',
+          description:
+            'Songstash is for quick and easy arrangement of Artist discography websites to connect with your audience',
+        }}
+      />
 
       <CoverWall covers={covers} />
 
@@ -116,8 +122,9 @@ export default function HomePage({
             </div>
 
             <h4 className="text-center text-3xl font-bold mt-32">
-              Create new artist page
+              Create a new artist page
             </h4>
+
             <Suspense>
               <Create />
             </Suspense>

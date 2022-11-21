@@ -25,8 +25,9 @@ export default function HomePage({
       <Head>
         <link rel="shortcut icon" href={artist.images[2].url} />
       </Head>
+
       <NextSeo
-        title={artist.name}
+        title={`${artist.name} on songstash`}
         twitter={{
           cardType: 'summary_large_image',
         }}
