@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import useSearch from './hooks/useSearch';
 import { InView } from 'react-intersection-observer';
 import { Audio } from 'react-loader-spinner';
 
 export function Search() {
   const [query, setQuery] = useState('');
+  const formRef = useRef<HTMLFormElement>(null);
 
   const {
     data: results,
@@ -14,15 +15,25 @@ export function Search() {
     isFetchingNextPage,
   } = useSearch(query, { limit: 5 });
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (formRef.current) {
+      formRef.current.action = '/' + query;
+      formRef.current.submit();
+    }
+  }
+
   return (
     <div className="relative mx-auto my-10 max-w-md">
-      <input
-        type="text"
-        className="w-full backdrop-blur-md text-lg appearance-none rounded-xl border-2 border-transparent transition-colors py-3 px-6 bg-opacity-60 bg-neutral-800 text-center focus:bg-opacity-80 focus:border-gray-300 focus:outline-none"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search artist..."
-      />
+      <form ref={formRef} onSubmit={handleSubmit}>
+        <input
+          type="text"
+          className="w-full backdrop-blur-md text-lg appearance-none rounded-xl border-2 border-transparent transition-colors py-3 px-6 bg-opacity-60 bg-neutral-800 text-center focus:bg-opacity-80 focus:border-gray-300 focus:outline-none"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search artist..."
+        />
+      </form>
 
       {isInitialLoading && (
         <div className="flex justify-center mt-2">
