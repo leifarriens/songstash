@@ -68,10 +68,14 @@ export const Artist = ({ artist, albums }: ArtistProps) => {
                   />
                 </a>
               </div>
-              <div className="text-center text-xs text-neutral-400">
-                {album.total_tracks} Tracks
-              </div>
-              <h3 className="text-lg font-semibold">{album.name}</h3>
+              {album.total_tracks > 1 && (
+                <div className="text-center text-xs text-neutral-400">
+                  {album.total_tracks} Tracks
+                </div>
+              )}
+              <a href={album.external_urls.spotify}>
+                <h3 className="text-lg font-semibold">{album.name}</h3>
+              </a>
               <div className="text-xs text-slate-300">
                 <span>{album.release_date}</span>{' '}
                 <span>({dayjs(album.release_date).fromNow()})</span>

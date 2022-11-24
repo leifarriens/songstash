@@ -10,6 +10,7 @@ const nextConfig = {
       { loader: '@next/font/google', options: { subsets: ['latin'] } },
     ],
   },
+  poweredByHeader: false,
 };
 
 module.exports = nextConfig;

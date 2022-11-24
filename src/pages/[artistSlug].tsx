@@ -7,6 +7,8 @@ import { prisma } from '../server/db/client';
 import { NextSeo } from 'next-seo';
 import { getArtist, getArtistAlbums } from '../services';
 
+const CANONICAL_URL = process.env.NEXT_PUBLIC_CANONICAL_URL;
+
 type SongstashPageProps = {
   artist: SpotifyApi.SingleArtistResponse;
   albums: SpotifyApi.ArtistsAlbumsResponse;
@@ -28,6 +30,7 @@ export default function HomePage({
 
       <NextSeo
         title={`${artist.name} on songstash`}
+        canonical={`${CANONICAL_URL}/${slug}`}
         twitter={{
           cardType: 'summary_large_image',
         }}

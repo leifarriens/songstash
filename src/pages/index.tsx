@@ -13,6 +13,8 @@ const Create = dynamic(() => import('../modules/Create'), {
   ssr: false,
 });
 
+const CANONICAL_URL = process.env.NEXT_PUBLIC_CANONICAL_URL;
+
 export default function HomePage({
   covers,
   artists,
@@ -21,8 +23,9 @@ export default function HomePage({
   return (
     <>
       <NextSeo
-        description="Songstash is for quick and easy arrangement of Artist discography websites to connect with your audience"
         title="Songstash"
+        description="Songstash is for quick and easy arrangement of Artist discography websites to connect with your audience"
+        canonical={CANONICAL_URL}
         twitter={{
           cardType: 'summary_large_image',
         }}
@@ -55,9 +58,9 @@ export default function HomePage({
           <Search />
 
           <section className="my-128">
-            <h2 className="text-center text-5xl font-bold mb-4">
+            <h3 className="text-center text-5xl font-bold mb-4">
               Instantly setup discography sites for Artists
-            </h2>
+            </h3>
 
             <p className="text-center text-lg font-semibold">
               Songstash is for quick and easy arrangement of Artist discography
