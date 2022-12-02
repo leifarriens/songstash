@@ -31,5 +31,5 @@ jobs:
       - name: 🧾 Spellcheck
         run: yarn spellcheck
 
-      - name: 📝 Format
-        run: yarn format
+      - name: 📝 Check Formatting
+        run: npx prettier ./src --check
