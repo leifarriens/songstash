@@ -109,7 +109,7 @@ export default function HomePage({
                     <img
                       width={224}
                       height={224}
-                      className="w-56 h-w-56 aspect-square"
+                      className="w-56 h-w-56 aspect-square object-cover"
                       src={artist.images[1].url}
                       alt=""
                     />
