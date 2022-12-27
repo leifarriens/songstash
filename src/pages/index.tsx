@@ -106,18 +106,18 @@ export default function HomePage({
                     key={artist.id}
                     className="flex flex-col items-center"
                   >
-                    <img
-                      width={224}
-                      height={224}
-                      className="w-56 h-w-56 aspect-square object-cover"
-                      src={artist.images[1].url}
-                      alt=""
-                    />
-                    <a
-                      href={`/${artist.id}`}
-                      className="text-center text-xl font-semibold mt-4"
-                    >
-                      {artist.name}
+                    <a href={`/${artist.id}`}>
+                      <img
+                        width={224}
+                        height={224}
+                        className="w-56 h-w-56 aspect-square object-cover"
+                        src={artist.images[1].url}
+                        alt=""
+                      />
+
+                      <h4 className="text-center text-xl font-semibold mt-4">
+                        {artist.name}
+                      </h4>
                     </a>
                   </article>
                 );
