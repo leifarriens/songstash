@@ -55,7 +55,9 @@ export default function HomePage({
             Instant discography websites for artists
           </h2>
 
-          <Search />
+          <div className="mx-auto my-10 max-w-md">
+            <Search />
+          </div>
 
           <section className="my-128">
             <h3 className="text-center text-5xl font-bold mb-4">
