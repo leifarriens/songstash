@@ -95,3 +95,26 @@ export async function searchArtist(
 
   return body.artists;
 }
+
+export async function getGenres() {
+  await getAccessToken();
+
+  const { body } = await spotifyApi.getAvailableGenreSeeds();
+
+  return body.genres;
+}
+
+export async function getRecommendations(
+  { genres, artists }: { genres: string[]; artists: string[] },
+  { limit = 20 }: GetPageOptions = {},
+) {
+  await getAccessToken();
+
+  const { body } = await spotifyApi.getRecommendations({
+    seed_genres: genres,
+    seed_artists: artists,
+    limit,
+  });
+
+  return body.tracks.filter((track) => track.preview_url);
+}
