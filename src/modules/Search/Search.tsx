@@ -2,7 +2,7 @@ import React, { BaseSyntheticEvent, useRef, useState } from 'react';
 import useSearch from './hooks/useSearch';
 import { InView } from 'react-intersection-observer';
 import { Audio } from 'react-loader-spinner';
-import Input from '../../components/Input';
+import { Input } from '../../components/Input';
 
 interface SearchProps {
   placeholder?: string;

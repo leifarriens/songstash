@@ -7,7 +7,7 @@ import { getGenres } from '../services';
 import { InferGetStaticPropsType } from 'next';
 import { Search } from '../modules/Search';
 import classNames from 'classnames';
-import Input from '../components/Input';
+import { Input } from '../components/Input';
 
 const initialFilterState = {
   genres: new Set<string>(),
