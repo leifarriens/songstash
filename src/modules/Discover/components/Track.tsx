@@ -12,7 +12,6 @@ export function Track({ track }: TrackProps) {
 
   return (
     <div
-      key={track.id}
       className={classNames(
         'relative p-4 mb-4 transition-transform before:absolute before:rounded-xl before:-z-10 before:inset-0 before:bg-opacity-80 before:backdrop-blur-md before:bg-neutral-800 content-[""] before:saturate-50',
         {

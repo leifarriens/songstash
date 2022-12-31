@@ -13,7 +13,7 @@ function DiscoverPage({
         description="Discover new music based on your liking! Powered by songstash"
       />
 
-      <main className="flex-1 mb-4 px-6 w-full">
+      <main className="flex-1 mb-4 px-5 w-full">
         <Discover genres={genres} />
       </main>
     </>

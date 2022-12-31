@@ -3,6 +3,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { Input } from '@components/ui';
 import { Search } from '../../Search';
 import { FilterState, FilterAction } from '../filter';
+import classNames from 'classnames';
 
 export function Filter({
   genres,
@@ -32,15 +33,22 @@ export function Filter({
               return g.includes(filterQuery.toLowerCase());
             }
           })
-          .map((g) => (
-            <button
-              key={g}
-              className="mb-1 p-2 text-xs text-neutral-300 bg-neutral-800 rounded-xl hover:bg-neutral-600 hover:text-white md:text-sm md:mb-2"
-              onClick={() => dispatch({ type: 'ADD_GENRE', payload: g })}
-            >
-              {g}
-            </button>
-          ))}
+          .map((g) => {
+            const selected = Array.from(filters.genres).includes(g);
+            const dispatchType = selected ? 'REMOVE_GENRE' : 'ADD_GENRE';
+            return (
+              <button
+                key={g}
+                className={classNames(
+                  'mb-1 p-2 text-xs text-neutral-300 bg-neutral-800 rounded-xl hover:bg-neutral-600 hover:text-white md:text-sm md:mb-2',
+                  { 'bg-neutral-600': selected },
+                )}
+                onClick={() => dispatch({ type: dispatchType, payload: g })}
+              >
+                {g}
+              </button>
+            );
+          })}
       </div>
       <Search
         placeholder="Filter artists"

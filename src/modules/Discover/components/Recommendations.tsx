@@ -2,6 +2,8 @@ import { trpc } from '@utils/trpc';
 import { Audio } from 'react-loader-spinner';
 import { Track } from './Track';
 import { AudioPlayer } from '@components/AudioPlayer';
+import { Button } from '@components/ui';
+import { useState } from 'react';
 
 export function Recommendations({
   genres,
@@ -10,9 +12,9 @@ export function Recommendations({
   genres: string[];
   artists: string[];
 }) {
-  const { data, error, fetchStatus } = trpc.recommendations.useQuery(
+  const { data, error, fetchStatus, refetch } = trpc.recommendations.useQuery(
     { genres, artists, limit: 30 },
-    { enabled: genres.length > 0 || artists.length > 0 },
+    { enabled: genres.length > 0 || artists.length > 0, staleTime: Infinity },
   );
 
   if (fetchStatus === 'fetching')
@@ -26,9 +28,21 @@ export function Recommendations({
 
   return (
     <div>
-      {data && data.map((track) => <Track key={track.id} track={track} />)}
+      {data && (
+        <>
+          {data.map((track) => (
+            <Track key={track.id} track={track} />
+          ))}
 
-      <AudioPlayer />
+          <div className="text-center">
+            <Button className="text-sm mt-6" onClick={() => refetch()}>
+              Refresh results
+            </Button>
+          </div>
+          {/* HACK: non-null assertion cause tracks without preview url are filtered */}
+          <AudioPlayer playlist={data.map((track) => track.preview_url!)} />
+        </>
+      )}
     </div>
   );
 }
