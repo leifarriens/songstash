@@ -1,6 +1,6 @@
 import React, { Dispatch, useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
-import { Input } from '../../../components/Input';
+import { Input } from '@components/ui';
 import { Search } from '../../Search';
 import { FilterState, FilterAction } from '../filter';
 
