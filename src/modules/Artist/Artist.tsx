@@ -1,3 +1,4 @@
+import { AudioPlayer } from '@components/AudioPlayer';
 import dayjs from '../../lib/dayjs';
 import { capitalizeFirstLetter } from '../../utils/helpers';
 
@@ -73,7 +74,11 @@ export const Artist = ({ artist, albums }: ArtistProps) => {
                   {album.total_tracks} Tracks
                 </div>
               )}
-              <a href={album.external_urls.spotify}>
+              <a
+                href={album.external_urls.spotify}
+                rel="noreferrer"
+                target="_blank"
+              >
                 <h3 className="text-lg font-semibold">{album.name}</h3>
               </a>
               <div className="text-xs text-slate-300">
