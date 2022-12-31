@@ -49,7 +49,7 @@ export function PlayButton({ src }: PlayButtonProps) {
           strokeDasharray={strokeDash}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
-          style={{ transition: 'all 0.1s linear' }}
+          style={{ transition: 'all 50ms linear' }}
         />
       </svg>
       <button
