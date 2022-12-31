@@ -28,6 +28,6 @@ function getBaseUrl() {
 }
 
 export const config = {
-  matcher: '/:slug*',
+  matcher: ['/:slug*', '/((?!discover).*)'],
   runtime: 'experimental-edge',
 };
