@@ -37,7 +37,7 @@ export function AudioPlayer({ playlist }: AudioPlayerProps) {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [playlist]);
 
   useEffect(() => {
     audioRef.current?.load();

@@ -1,4 +1,4 @@
-import React, { Dispatch, useState } from 'react';
+import { Dispatch, useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { Input } from '@components/ui';
 import { Search } from '../../Search';
@@ -17,45 +17,50 @@ export function Filter({
   const [filterQuery, setFilterQuery] = useState('');
 
   return (
-    <div>
+    <>
       <Input
         type="search"
         value={filterQuery}
         onChange={(e) => setFilterQuery(e.target.value)}
         placeholder="Filter genres..."
+        className="w-full text-center md:w-auto md:text-left"
       />
 
-      <div className="flex flex-wrap gap-1 md:gap-1 my-2">
-        {genres
-          .filter((g) => {
-            if (!filterQuery) return !g.includes('-');
-            if (filterQuery !== '') {
-              return g.includes(filterQuery.toLowerCase());
-            }
-          })
-          .map((g) => {
-            const selected = Array.from(filters.genres).includes(g);
-            const dispatchType = selected ? 'REMOVE_GENRE' : 'ADD_GENRE';
-            return (
-              <button
-                key={g}
-                className={classNames(
-                  'mb-1 p-2 text-xs text-neutral-300 bg-neutral-800 rounded-xl hover:bg-neutral-600 hover:text-white md:text-sm md:mb-2',
-                  { 'bg-neutral-600': selected },
-                )}
-                onClick={() => dispatch({ type: dispatchType, payload: g })}
-              >
-                {g}
-              </button>
-            );
-          })}
+      <div className="overflow-y-hidden overflow-x-scroll my-2 md:overflow-auto">
+        <div className="flex gap-1 py-2 md:flex-wrap">
+          {genres
+            .filter((g) => {
+              if (!filterQuery) return !g.includes('-');
+              if (filterQuery !== '') {
+                return g.includes(filterQuery.toLowerCase());
+              }
+            })
+            .map((g) => {
+              const selected = Array.from(filters.genres).includes(g);
+              const dispatchType = selected ? 'REMOVE_GENRE' : 'ADD_GENRE';
+              return (
+                <button
+                  key={g}
+                  className={classNames(
+                    'mb-1 py-1 px-2 text-sm text-neutral-300 bg-neutral-800 rounded-md hover:bg-neutral-600 hover:text-white',
+                    { 'bg-neutral-600': selected },
+                  )}
+                  onClick={() => dispatch({ type: dispatchType, payload: g })}
+                >
+                  {g}
+                </button>
+              );
+            })}
+        </div>
       </div>
+
       <Search
-        placeholder="Filter artists"
+        placeholder="Discover by artists"
         onArtistClick={(artist) => {
           dispatch({ type: 'ADD_ARTIST', payload: artist });
         }}
       />
+
       <div className="my-6">
         <div className="mb-2 text-neutral-200 text-sm">Results based on:</div>
         {Array.from(filters.artists).map(({ id, name }) => (
@@ -91,6 +96,6 @@ export function Filter({
           clear
         </button>
       </div>
-    </div>
+    </>
   );
 }

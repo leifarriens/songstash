@@ -26,7 +26,7 @@ export function Track({ track }: TrackProps) {
             <img
               src={track.album.images[2].url}
               alt={track.album.name}
-              className="w-16 h-16 aspect-square object-cover shadow-lg"
+              className="aspect-square object-cover shadow-lg"
               loading="lazy"
             />
           )}

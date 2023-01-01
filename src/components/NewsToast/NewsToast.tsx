@@ -12,8 +12,9 @@ export function NewsToast({ children }: NewsToastProps) {
 
   return (
     <div className="relative py-6 bg-gradient-to-l from-pink-500 to-pink-400">
-      <div className="mx-auto max-w-4xl text-center">{children}</div>
+      <div className="mx-auto max-w-4xl text-center px-12">{children}</div>
       <button
+        aria-label="Close News"
         className="absolute right-6 top-6"
         onClick={() => setVisible(false)}
       >
