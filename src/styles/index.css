@@ -15,7 +15,8 @@ body {
 
 @layer components {
   .text-gradient {
-    background: -webkit-linear-gradient(35deg,
+    background: -webkit-linear-gradient(
+      35deg,
       var(--tw-gradient-from),
       var(--tw-gradient-to)
     );

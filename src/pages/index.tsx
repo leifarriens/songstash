@@ -8,6 +8,8 @@ import { Search } from '../modules/Search';
 import CountUp from 'react-countup';
 import { InView } from 'react-intersection-observer';
 import { NextSeo } from 'next-seo';
+import { NewsToast } from '@components/NewsToast';
+import Link from 'next/link';
 
 const Create = dynamic(() => import('../modules/Create'), {
   ssr: false,
@@ -38,11 +40,19 @@ export default function HomePage({
         }}
       />
 
+      <NewsToast>
+        Want to discover new Music? Check out{' '}
+        <Link href="/discover" className="font-semibold hover:underline">
+          Songstash Discover
+        </Link>
+        !
+      </NewsToast>
+
       <CoverWall covers={covers} />
 
       <main className="mt-72 md:mt-96">
         <div className="px-5">
-          <h1 className="text-5xl text-center tracking-tight font-bold text-white sm:text-7xl sm:tracking-tight lg:text-[4rem] xl:text-[6rem] xl:tracking-tight">
+          <h1 className="text-5xl text-center tracking-tight font-bold text-white sm:text-7xl sm:tracking-tight lg:text-[4rem] xl:text-[5.5rem] xl:tracking-tight">
             <span>
               Welcome to{' '}
               <span className="text-gradient from-pink-600 to-pink-400">
@@ -55,7 +65,9 @@ export default function HomePage({
             Instant discography websites for artists
           </h2>
 
-          <Search />
+          <div className="mx-auto my-10 max-w-md">
+            <Search />
+          </div>
 
           <section className="my-128">
             <h3 className="text-center text-5xl font-bold mb-4">

@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { artistInput, artistUrl } from '../../utils/validators';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { Button, Input } from '@components/ui';
 
 export default function Create() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -52,13 +52,9 @@ export default function Create() {
           {...register('value')}
           placeholder="Enter Spotify Artist URL or ID"
         />
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full sm:w-auto mt-6 font-medium text-base py-3 px-5 rounded-xl bg-gradient-to-r from-pink-600 to-pink-400 transition-colors disabled:opacity-70"
-        >
+        <Button type="submit" className="mt-6" disabled={isSubmitting}>
           Create songstash
-        </button>
+        </Button>
       </form>
     </div>
   );

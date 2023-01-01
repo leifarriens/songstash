@@ -1,6 +1,7 @@
 import '../styles/index.css';
 import { Inter } from '@next/font/google';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import classNames from 'classnames';
 
 const inter = Inter();
 
@@ -19,7 +20,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         />
         <title>Songstash</title>
       </Head>
-      <div className={inter.className}>
+      <div
+        className={classNames(inter.className, 'min-h-screen flex flex-col')}
+      >
         <Component {...pageProps} />
         <footer>
           <div className="text-center text-sm text-neutral-400 my-8">
