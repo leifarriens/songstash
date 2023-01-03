@@ -16,6 +16,9 @@ export function Filter({
 }) {
   const [filterQuery, setFilterQuery] = useState('');
 
+  const numberOfFilters =
+    Array.from(filters.genres).length + Array.from(filters.artists).length;
+
   return (
     <>
       <Input
@@ -61,41 +64,45 @@ export function Filter({
         }}
       />
 
-      <div className="my-6">
-        <div className="mb-2 text-neutral-200 text-sm">Results based on:</div>
-        {Array.from(filters.artists).map(({ id, name }) => (
-          <span
-            key={id}
-            className="inline-flex gap-1 bg-neutral-600 mr-2 py-1 px-2 rounded-md bg-opacity-60"
-          >
-            {name}
-            <button
-              onClick={() => dispatch({ type: 'REMOVE_ARTIST', payload: id })}
+      {numberOfFilters > 0 && (
+        <div className="my-6">
+          <div className="mb-2 text-neutral-200 text-sm">Results based on:</div>
+          {Array.from(filters.artists).map(({ id, name }) => (
+            <span
+              key={id}
+              className="inline-flex gap-1 bg-neutral-600 mr-2 py-1 px-2 rounded-md bg-opacity-60"
             >
-              <AiOutlineClose />
-            </button>
-          </span>
-        ))}
-        {Array.from(filters.genres).map((genre) => (
-          <span
-            key={genre}
-            className="inline-flex gap-1 bg-neutral-600 mr-2 py-1 px-2 rounded-md bg-opacity-60"
-          >
-            {genre}
-            <button
-              onClick={() => dispatch({ type: 'REMOVE_GENRE', payload: genre })}
+              {name}
+              <button
+                onClick={() => dispatch({ type: 'REMOVE_ARTIST', payload: id })}
+              >
+                <AiOutlineClose />
+              </button>
+            </span>
+          ))}
+          {Array.from(filters.genres).map((genre) => (
+            <span
+              key={genre}
+              className="inline-flex gap-1 bg-neutral-600 mr-2 py-1 px-2 rounded-md bg-opacity-60"
             >
-              <AiOutlineClose />
-            </button>
-          </span>
-        ))}
-        <button
-          className="hover:underline"
-          onClick={() => dispatch({ type: 'RESET' })}
-        >
-          clear
-        </button>
-      </div>
+              {genre}
+              <button
+                onClick={() =>
+                  dispatch({ type: 'REMOVE_GENRE', payload: genre })
+                }
+              >
+                <AiOutlineClose />
+              </button>
+            </span>
+          ))}
+          <button
+            className="hover:underline"
+            onClick={() => dispatch({ type: 'RESET' })}
+          >
+            clear
+          </button>
+        </div>
+      )}
     </>
   );
 }
