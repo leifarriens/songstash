@@ -19,6 +19,11 @@ export function Filter({
   const numberOfFilters =
     Array.from(filters.genres).length + Array.from(filters.artists).length;
 
+  function handleClear() {
+    setFilterQuery('');
+    dispatch({ type: 'RESET' });
+  }
+
   return (
     <>
       <Input
@@ -95,10 +100,7 @@ export function Filter({
               </button>
             </span>
           ))}
-          <button
-            className="hover:underline"
-            onClick={() => dispatch({ type: 'RESET' })}
-          >
+          <button className="hover:underline" onClick={handleClear}>
             clear
           </button>
         </div>
