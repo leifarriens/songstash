@@ -7,68 +7,73 @@ interface AudioPlayerProps {
 
 export function AudioPlayer({ playlist }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const audio = useAudioPlayerStore();
+  const { next, previous, stop, setPlaylist, setProgress, src } =
+    useAudioPlayerStore();
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = 0.25;
     }
+  }, []);
 
-    if (playlist) {
-      audio.setPlaylist(playlist);
-    }
+  useEffect(() => {
+    // NOTE: Prevents audio from resuming after remounting
+    stop();
+  }, [stop]);
 
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowDown') {
-        audio.next();
+        next();
       }
 
       if (e.key === 'ArrowUp') {
-        audio.previous();
+        previous();
       }
     };
-
-    // NOTE: Prevents audio from resuming after remounting
-    // FIXME: breaks rules of hooks
-    audio.stop();
 
     document.addEventListener('keydown', handleKeyDown);
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [playlist]);
+  }, [next, previous]);
+
+  useEffect(() => {
+    if (!playlist) {
+      setPlaylist([]);
+      return;
+    }
+
+    setPlaylist(playlist);
+  }, [setPlaylist, playlist]);
 
   useEffect(() => {
     audioRef.current?.load();
-  }, [audio.src]);
-
-  const handleLoaded = () => audioRef.current?.play();
+  }, [src]);
 
   function handleTimeUpdate() {
     if (audioRef.current && audioRef.current.duration) {
-      audio.setProgress(
-        audioRef.current.currentTime / audioRef.current.duration,
-      );
+      setProgress(audioRef.current.currentTime / audioRef.current.duration);
     }
   }
 
   function handleTrackEnded() {
     if (playlist) {
-      audio.next();
+      next();
     } else {
-      audio.stop();
+      stop();
     }
   }
 
   return (
     <audio
       ref={audioRef}
-      onLoadedData={handleLoaded}
+      onCanPlay={() => audioRef.current?.play()}
       onEnded={handleTrackEnded}
       onTimeUpdate={handleTimeUpdate}
     >
-      {audio.src && <source src={audio.src} type="audio/mpeg" />}
+      {src && <source src={src} type="audio/mpeg" />}
     </audio>
   );
 }
