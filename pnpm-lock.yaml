@@ -13,9 +13,9 @@ importers:
       '@trpc/client': ^10.0.0-rc.8
       '@types/react': ~18.0.14
       '@types/react-native': ~0.70.6
+      dotenv: ^16.0.3
       expo: ~47.0.9
       expo-av: ^13.0.2
-      expo-blur: ^12.0.1
       expo-status-bar: ~1.4.2
       nativewind: ^2.0.11
       react: 18.1.0
@@ -29,9 +29,9 @@ importers:
       '@songstash/api': link:../../packages/api
       '@tanstack/react-query': 4.20.9_2bkajway7msrchxwrvhplxy5ru
       '@trpc/client': 10.7.0
+      dotenv: 16.0.3
       expo: 47.0.11_@babel+core@7.20.12
       expo-av: 13.0.2_expo@47.0.11
-      expo-blur: 12.0.1_expo@47.0.11
       expo-status-bar: 1.4.2
       nativewind: 2.0.11_f3xea42f6zrwqyr5c6mbkdauxa
       react: 18.1.0
@@ -4467,6 +4467,11 @@ packages:
       is-obj: 2.0.0
     dev: true
 
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
+    dev: false
+
   /ee-first/1.1.1:
     resolution: {integrity: sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=}
     dev: false
@@ -4968,14 +4973,6 @@ packages:
 
   /expo-av/13.0.2_expo@47.0.11:
     resolution: {integrity: sha512-u+y9wUBodp08UjRZYckNWzr9zEQHK6eScRBkhdTd9Rq48SEZ7eN6xXn79hubvk0P5nj7lFS+hdKjmx9T5XHGww==}
-    peerDependencies:
-      expo: '*'
-    dependencies:
-      expo: 47.0.11_@babel+core@7.20.12
-    dev: false
-
-  /expo-blur/12.0.1_expo@47.0.11:
-    resolution: {integrity: sha512-7oF/xRIFJukM4/qL6ejZ4Z/4YcVExvBPsBrz7rGYz6PtgAkWwYFR62+ExZOzTEG4hgoPPmlnt1ncimsk/MYUgQ==}
     peerDependencies:
       expo: '*'
     dependencies:
