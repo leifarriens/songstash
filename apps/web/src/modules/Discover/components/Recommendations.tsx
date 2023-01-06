@@ -4,17 +4,20 @@ import { Track } from './Track';
 import { AudioPlayer } from '@components/AudioPlayer';
 import { Button } from '@components/ui';
 import { useState } from 'react';
+import { FilterState } from '../filter';
 
-export function Recommendations({
-  genres,
-  artists,
-}: {
+interface RecommendationsProps {
   genres: string[];
   artists: string[];
-}) {
+}
+
+export function Recommendations({ genres, artists }: RecommendationsProps) {
   const { data, error, fetchStatus, refetch } = trpc.recommendations.useQuery(
     { genres, artists, limit: 30 },
-    { enabled: genres.length > 0 || artists.length > 0, staleTime: Infinity },
+    {
+      enabled: genres.length > 0 || artists.length > 0,
+      staleTime: Infinity,
+    },
   );
 
   if (fetchStatus === 'fetching')

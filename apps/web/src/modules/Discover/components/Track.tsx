@@ -10,6 +10,8 @@ export function Track({ track }: TrackProps) {
 
   const isPlaying = audio.src === track.preview_url;
 
+  const image = track.album.images[2];
+
   return (
     <div
       className={classNames(
@@ -22,10 +24,12 @@ export function Track({ track }: TrackProps) {
     >
       <div className="flex items-center gap-4">
         <a href={track.external_urls.spotify} rel="noreferrer" target="_blank">
-          {track.album.images[2] && (
+          {image && (
             <img
-              src={track.album.images[2].url}
+              src={image.url}
               alt={track.album.name}
+              width={image.width}
+              height={image.height}
               className="aspect-square object-cover shadow-lg"
               loading="lazy"
             />

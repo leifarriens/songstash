@@ -75,7 +75,7 @@ export function Filter({
           {Array.from(filters.artists).map(({ id, name }) => (
             <span
               key={id}
-              className="inline-flex gap-1 bg-neutral-600 mr-2 py-1 px-2 rounded-md bg-opacity-60"
+              className="inline-flex gap-1 bg-neutral-600 mr-2 mb-2 py-1 px-2 rounded-md bg-opacity-60"
             >
               {name}
               <button
@@ -88,7 +88,7 @@ export function Filter({
           {Array.from(filters.genres).map((genre) => (
             <span
               key={genre}
-              className="inline-flex gap-1 bg-neutral-600 mr-2 py-1 px-2 rounded-md bg-opacity-60"
+              className="inline-flex gap-1 bg-neutral-600 mr-2 mb-2 py-1 px-2 rounded-md bg-opacity-60"
             >
               {genre}
               <button
