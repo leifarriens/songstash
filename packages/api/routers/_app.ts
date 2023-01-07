@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { procedure, router } from '../trpc';
-import { getArtistAlbums, getRecommendations, searchArtist } from '../services';
+import {
+  getArtistAlbums,
+  getGenres,
+  getRecommendations,
+  searchArtist,
+} from '../services';
 
 export const appRouter = router({
   search: procedure
@@ -32,6 +37,10 @@ export const appRouter = router({
       const albums = await getArtistAlbums(input.artistId, { limit, offset });
       return albums;
     }),
+  genres: procedure.query(async () => {
+    const genres = await getGenres();
+    return genres;
+  }),
   recommendations: procedure
     .input(
       z.object({
