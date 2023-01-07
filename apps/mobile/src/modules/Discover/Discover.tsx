@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import {
   View,
   Text,
@@ -6,34 +6,80 @@ import {
   Image,
   ImageBackground,
   RefreshControl,
-  SafeAreaView,
 } from 'react-native';
 import { IOScrollView, InView } from 'react-native-intersection-observer';
-import { Audio } from 'expo-av';
+import { Audio, AVPlaybackStatus } from 'expo-av';
+import * as Progress from 'react-native-progress';
 import { trpc } from '../../utils/trpc';
+import { filterReducer, FilterState, initialFilterState } from './filter';
+import { Filter } from './components/Filter';
+import { useAudioStore } from '../store';
 
 export function Discover() {
+  const [filters, dispatch] = useReducer(filterReducer, initialFilterState);
+
   return (
-    <View className="bg-black">
-      <Recommendations />
+    <View>
+      <Filter filters={filters} dispatch={dispatch} />
+
+      <Recommendations filters={filters} />
     </View>
   );
 }
 
-function Recommendations() {
+interface RecommendationsProps {
+  filters: FilterState;
+}
+
+function Recommendations({ filters }: RecommendationsProps) {
   const [isScrolling, setIsScrolling] = useState(false);
   const height = Dimensions.get('window').height;
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [currentTrack, setCurrentTrack] =
+    useState<SpotifyApi.RecommendationTrackObject | null>(null);
   const [nextTrack, setNextTrack] =
     useState<SpotifyApi.RecommendationTrackObject | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { current, setCurrent, updatePlayback } = useAudioStore();
 
-  const { data, isFetching, refetch } = trpc.recommendations.useQuery({
-    genres: ['jazz'],
-    artists: [],
-  });
+  const { data, isFetching, refetch } = trpc.recommendations.useQuery(
+    {
+      genres: Array.from(filters.genres),
+      artists: [],
+    },
+    {
+      enabled: Array.from(filters.genres).length > 0,
+    },
+  );
+
+  useEffect(() => {
+    setCurrentTrack(null);
+    setNextTrack(null);
+
+    if (sound) {
+      // try {
+      //   sound.stopAsync();
+      //   sound.unloadAsync();
+      // } catch (error) {
+      //   console.log(error);
+      // }
+
+      setSound(null);
+    }
+  }, [filters, data]);
+
+  function handlePlaybackStatusUpdate(status: AVPlaybackStatus) {
+    if (status.isLoaded) {
+      updatePlayback(status);
+
+      // FIXME: replay track now working
+      // if (status.didJustFinish) {
+      //   sound?.replayAsync();
+      // }
+    }
+  }
 
   async function playTrack(track: SpotifyApi.RecommendationTrackObject) {
-    setNextTrack(track);
     const { sound } = await Audio.Sound.createAsync(
       {
         uri: track.preview_url!,
@@ -41,23 +87,27 @@ function Recommendations() {
       {
         isLooping: false,
       },
-      // (status) => console.log(status),
+      handlePlaybackStatusUpdate,
     );
 
     setSound(sound);
 
     await sound.playAsync();
+    setCurrent(track);
+    setIsPlaying(true);
   }
 
+  // play track on current track change
   useEffect(() => {
-    if (!isScrolling && nextTrack) {
-      playTrack(nextTrack);
+    if (currentTrack) {
+      playTrack(currentTrack);
     }
-  }, [nextTrack, isScrolling]);
+  }, [currentTrack]);
 
   useEffect(() => {
     return sound
       ? () => {
+          setIsPlaying(false);
           console.log('Unloading Sound');
           sound.stopAsync();
           sound.unloadAsync();
@@ -65,76 +115,103 @@ function Recommendations() {
       : undefined;
   }, [sound]);
 
-  if (!data) return null;
+  useEffect(() => {
+    // Move next
+    if (nextTrack && !currentTrack) {
+      setCurrentTrack(nextTrack);
+      setNextTrack(null);
+    }
+  }, [nextTrack]);
+
+  function handleTrackInViewChange(
+    track: SpotifyApi.RecommendationTrackObject,
+    inView: boolean,
+  ) {
+    if (inView) {
+      setNextTrack(track);
+    }
+
+    // if track leaving viewport is the current track -> play next track
+    if (!inView && currentTrack?.id === track.id) {
+      if (nextTrack) {
+        setCurrentTrack(nextTrack);
+      }
+    }
+  }
 
   return (
-    <IOScrollView
-      className="bg-black mb-8"
-      // contentContainerStyle={{ backgroundColor: 'black' }}
-      onScrollBeginDrag={() => setIsScrolling(true)}
-      onScrollEndDrag={() => setIsScrolling(false)}
-      snapToInterval={height}
-      snapToAlignment="center"
-      decelerationRate="fast"
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl
-          refreshing={isFetching}
-          onRefresh={() => refetch()}
-          tintColor="white"
-        />
-      }
-    >
-      {data.map((track) => (
-        <Track
-          key={track.id}
-          height={height}
-          track={track}
-          onTrackPlay={setNextTrack}
-        />
-      ))}
-    </IOScrollView>
+    <>
+      <IOScrollView
+        className="bg-black mb-8"
+        // contentContainerStyle={{ backgroundColor: 'black' }}
+        onScrollBeginDrag={() => setIsScrolling(true)}
+        onScrollEndDrag={() => setIsScrolling(false)}
+        snapToInterval={height}
+        snapToAlignment="center"
+        decelerationRate="fast"
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={() => refetch()}
+            tintColor="white"
+          />
+        }
+      >
+        {data &&
+          data.map((track) => (
+            <Track
+              key={track.id}
+              height={height}
+              track={track}
+              onInViewChange={handleTrackInViewChange}
+            />
+          ))}
+      </IOScrollView>
+      <View className="absolute bottom-8">
+        <Text className="text-white">Current: {currentTrack?.name}</Text>
+        <Text className="text-white">Next: {nextTrack?.name}</Text>
+      </View>
+    </>
   );
 }
 
 interface TrackProps {
   track: SpotifyApi.RecommendationTrackObject;
   height: number;
-  onTrackPlay: (track: SpotifyApi.RecommendationTrackObject) => void;
+  onInViewChange: (
+    track: SpotifyApi.RecommendationTrackObject,
+    inView: boolean,
+  ) => void;
 }
 
-function Track({ track, height, onTrackPlay }: TrackProps) {
-  function handleViewChange(inView: boolean) {
-    if (inView) {
-      onTrackPlay(track);
-    }
-  }
+function Track({ track, height, onInViewChange }: TrackProps) {
+  const { current, progress } = useAudioStore();
+  const isCurrent = track.id === current?.id;
 
   return (
     <InView
       key={track.id}
       className="relative flex justify-center items-center"
       style={{ height }}
-      onChange={handleViewChange}
+      onChange={(inView) => onInViewChange(track, inView)}
     >
       <ImageBackground
         blurRadius={18}
         resizeMode="cover"
         source={{ uri: track.album.images[1].url }}
-        style={{
-          opacity: 0.4,
-        }}
-        className="absolute inset-0"
+        className="absolute inset-0 opacity-40"
       />
       <View className="flex justify-center items-center px-8">
         <Image
           source={{ uri: track.album.images[1].url }}
-          className="w-56 h-56 bg-neutral-500 shadow-xl mb-4"
+          className="w-64 h-64 bg-neutral-500 shadow-xl mb-4"
         />
         <View className="flex items-center">
           <Text className="text-neutral-500">{track.artists[0].name}</Text>
           <Text className="text-white text-lg">{track.name}</Text>
         </View>
+        <Progress.Pie progress={isCurrent ? progress : 0} size={50} />
       </View>
     </InView>
   );

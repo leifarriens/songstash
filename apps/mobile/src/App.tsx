@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Constants from 'expo-constants';
 import { trpc } from './utils/trpc';
 import { Discover } from './modules/Discover';
+import { View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
 const API_URL = Constants.expoConfig?.extra?.API_URL;
 
@@ -32,7 +34,10 @@ function App() {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <Discover />
+        <View className="flex-1 bg-black">
+          <StatusBar style="light" />
+          <Discover />
+        </View>
       </QueryClientProvider>
     </trpc.Provider>
   );
