@@ -9,6 +9,8 @@
     "ios": "expo start --ios"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.2.2",
+    "@expo/vector-icons": "^13.0.0",
     "@songstash/api": "*",
     "@tanstack/react-query": "^4.16.1",
     "@trpc/client": "^10.0.0-rc.8",
@@ -16,15 +18,19 @@
     "dotenv": "^16.0.3",
     "expo": "~47.0.9",
     "expo-av": "^13.0.2",
+    "expo-linear-gradient": "^12.0.1",
+    "expo-splash-screen": "^0.17.5",
     "expo-status-bar": "~1.4.2",
     "nativewind": "^2.0.11",
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-gesture-handler": "^2.8.0",
     "react-native-intersection-observer": "^0.0.9",
     "react-native-progress": "^5.0.0",
-    "react-native-svg": "^13.6.0",
+    "react-native-svg": "13.4.0",
     "react-native-web": "~0.18.9",
+    "use-debounce": "^8.0.4",
     "zustand": "^4.1.5"
   },
   "devDependencies": {
