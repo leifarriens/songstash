@@ -5,9 +5,9 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  SafeAreaView,
 } from 'react-native';
 import classNames from 'classnames';
+import { Ionicons } from '@expo/vector-icons';
 import { trpc } from '../../../utils/trpc';
 import { FilterAction, FilterState } from '../filter';
 
@@ -20,6 +20,8 @@ export function Filter({ filters, dispatch }: FilterProps) {
   const genreScrollRef = useRef<ScrollView | null>(null);
   const [filterQuery, setFilterQuery] = useState('');
 
+  const numberOfFilters = filters.genres.length;
+
   const { data } = trpc.genres.useQuery(undefined, {
     staleTime: Infinity,
   });
@@ -31,87 +33,85 @@ export function Filter({ filters, dispatch }: FilterProps) {
     });
   }, [filters.genres]);
 
-  return (
-    <View className="absolute top-12 z-20 px-3 w-full">
-      <View className="mb-10 ">
-        <TextInput
-          placeholder="Filter genres..."
-          className="px-4 bg-neutral-800 bg-opacity-50 rounded-xl text-white"
-          clearButtonMode="always"
-          value={filterQuery}
-          onChangeText={setFilterQuery}
-          style={{ fontSize: 20, paddingVertical: 10 }}
-        />
+  function handleFilterInputFocus() {
+    genreScrollRef.current?.scrollTo({
+      x: 0,
+      animated: true,
+    });
+  }
 
-        <ScrollView
-          ref={genreScrollRef}
-          horizontal={true}
-          className="flex py-3"
-        >
-          {Array.from(filters.genres)
-            .reverse()
+  return (
+    <View className="absolute top-16 z-20 px-3 w-full">
+      <TextInput
+        placeholder="Search genres..."
+        className="px-3 bg-neutral-800 rounded-xl text-white"
+        clearButtonMode="always"
+        value={filterQuery}
+        onChangeText={setFilterQuery}
+        onFocus={handleFilterInputFocus}
+        style={{
+          fontSize: 18,
+          paddingVertical: 10,
+          backgroundColor: 'rgba(55, 55, 55,0.95)',
+        }}
+      />
+
+      <ScrollView
+        ref={genreScrollRef}
+        horizontal={true}
+        contentContainerStyle={{ alignItems: 'center' }}
+        className="flex py-3"
+      >
+        {numberOfFilters > 0 && (
+          <TouchableOpacity
+            onPress={() => dispatch({ type: 'RESET' })}
+            className="flex flex-row items-center rounded-lg py-1 mr-1"
+          >
+            <Ionicons name="close-circle" size={24} color="white" />
+          </TouchableOpacity>
+        )}
+
+        {filters.genres.reverse().map((genre) => (
+          <GenreBadge
+            key={genre}
+            genre={genre}
+            selected={filters.genres.includes(genre)}
+            onPress={(genre) =>
+              dispatch({ type: 'REMOVE_GENRE', payload: genre })
+            }
+          />
+        ))}
+
+        {filters.genres.length > 0 && (
+          <Text className="text-white text-2xl mr-1">|</Text>
+        )}
+
+        {data &&
+          data
+            .filter((g) => {
+              return !filters.genres.includes(g);
+            })
+            .filter((g) => {
+              if (!filterQuery) return !g.includes('-');
+              if (filterQuery !== '') {
+                return g.includes(filterQuery.toLowerCase());
+              }
+            })
+            .sort((a, b) => {
+              // return a.localeCompare(b);
+              return a.length - b.length;
+            })
             .map((genre) => (
               <GenreBadge
                 key={genre}
                 genre={genre}
-                selected={true}
-                onPress={(genre) =>
-                  dispatch({ type: 'REMOVE_GENRE', payload: genre })
-                }
+                onPress={(genre) => {
+                  dispatch({ type: 'ADD_GENRE', payload: genre });
+                  setFilterQuery('');
+                }}
               />
             ))}
-
-          {Array.from(filters.genres).length > 0 && (
-            <Text className="text-white text-2xl mr-1">|</Text>
-          )}
-
-          {data &&
-            data
-              .filter((g) => {
-                return !Array.from(filters.genres).includes(g);
-              })
-              .filter((g) => {
-                if (!filterQuery) return !g.includes('-');
-                if (filterQuery !== '') {
-                  return g.includes(filterQuery.toLowerCase());
-                }
-              })
-              .sort((a, b) => {
-                return a.length - b.length;
-              })
-              .map((genre) => (
-                <GenreBadge
-                  key={genre}
-                  genre={genre}
-                  onPress={(genre) =>
-                    dispatch({ type: 'ADD_GENRE', payload: genre })
-                  }
-                />
-              ))}
-        </ScrollView>
-
-        {/* <View className="flex flex-row justify-center gap-2 flex-wrap py-2">
-          {data &&
-            data
-              .filter((g) => {
-                if (!filterQuery) return !g.includes('-');
-                if (filterQuery !== '') {
-                  return g.includes(filterQuery.toLowerCase());
-                }
-              })
-              .map((genre) => (
-                <TouchableOpacity
-                  key={genre}
-                  className="p-2 bg-neutral-700 w-auto rounded-xl"
-                  onPress={() =>
-                    dispatch({ type: 'ADD_GENRE', payload: genre })
-                  }
-                >
-                  <Text className="text-white text-lg">{genre}</Text>
-                </TouchableOpacity>
-              ))}
-        </View> */}
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -127,14 +127,16 @@ function GenreBadge({
 }) {
   return (
     <TouchableOpacity
-      className={classNames('bg-neutral-700 rounded p-2 mr-1', {
-        'bg-neutral-400': selected,
-      })}
+      className={classNames(
+        'flex flex-row items-center bg-neutral-800 rounded-lg px-2 py-1 mr-1',
+        {
+          'bg-pink-700': selected,
+        },
+      )}
       onPress={() => onPress(genre)}
     >
-      <Text className="text-white">
-        {genre} {selected && 'x'}
-      </Text>
+      <Text className="text-neutral-300 text-lg">{genre}</Text>
+      {selected && <Ionicons name="close" size={18} color="white" />}
     </TouchableOpacity>
   );
 }
