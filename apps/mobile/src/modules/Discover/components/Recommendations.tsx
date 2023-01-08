@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Dimensions, RefreshControl, View, Text } from 'react-native';
 import { IOScrollView } from 'react-native-intersection-observer';
+import shallow from 'zustand/shallow';
 import { trpc } from '../../../utils/trpc';
 import { useAudioStore } from '../store';
 import { FilterState } from '../filter';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { Track } from './Track';
-import { InView } from 'react-native-intersection-observer';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 interface RecommendationsProps {
   filters: FilterState;
@@ -18,9 +17,15 @@ export function Recommendations({ filters }: RecommendationsProps) {
   const height = Dimensions.get('window').height;
   const [nextTrack, setNextTrack] =
     useState<SpotifyApi.RecommendationTrackObject | null>(null);
-  const { currentTrack, setCurrentTrack } = useAudioStore();
+  const { currentTrack, setCurrentTrack } = useAudioStore(
+    (state) => ({
+      currentTrack: state.currentTrack,
+      setCurrentTrack: state.setCurrentTrack,
+    }),
+    shallow,
+  );
 
-  const { playTrack, unloadTrack } = useAudioPlayer();
+  const { playTrack, unloadTrack, togglePlayback } = useAudioPlayer();
 
   const { data, isFetching, refetch } = trpc.recommendations.useQuery(
     {
@@ -60,7 +65,6 @@ export function Recommendations({ filters }: RecommendationsProps) {
     inView: boolean,
   ) {
     if (inView) {
-      console.log(track.name, inView);
       setNextTrack(track);
     }
 
@@ -98,6 +102,7 @@ export function Recommendations({ filters }: RecommendationsProps) {
               height={height}
               track={track}
               onInViewChange={handleTrackInViewChange}
+              onPress={() => togglePlayback()}
             />
           ))}
       </IOScrollView>

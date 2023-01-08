@@ -147,13 +147,11 @@ importers:
       '@trpc/server': ^10.0.0-rc.8
       '@types/spotify-web-api-node': ^5.0.7
       spotify-web-api-node: ^5.0.2
-      use-debounce: ^8.0.4
       zod: ^3.19.1
     dependencies:
       '@songstash/database': link:../database
       '@trpc/server': 10.7.0
       spotify-web-api-node: 5.0.2
-      use-debounce: 8.0.4
       zod: 3.20.2
     devDependencies:
       '@types/spotify-web-api-node': 5.0.7
@@ -2112,9 +2110,6 @@ packages:
     resolution: {integrity: sha512-D+TBpJUHe4+oTGFPb4o0rrw/h1xxc6wF+abJnbDHUkhnaeiHkE2O3ByS7FdiZ2FT36t0OKqeSKG/xFwWT3m1Ew==}
     peerDependencies:
       expo-modules-autolinking: '>=0.8.1'
-    peerDependenciesMeta:
-      expo-modules-autolinking:
-        optional: true
     dependencies:
       '@expo/config': 7.0.3
       '@expo/config-plugins': 5.0.4
@@ -2135,9 +2130,6 @@ packages:
     resolution: {integrity: sha512-D+TBpJUHe4+oTGFPb4o0rrw/h1xxc6wF+abJnbDHUkhnaeiHkE2O3ByS7FdiZ2FT36t0OKqeSKG/xFwWT3m1Ew==}
     peerDependencies:
       expo-modules-autolinking: '>=0.8.1'
-    peerDependenciesMeta:
-      expo-modules-autolinking:
-        optional: true
     dependencies:
       '@expo/config': 7.0.3
       '@expo/config-plugins': 5.0.4
@@ -9672,13 +9664,6 @@ packages:
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
-    dev: false
-
-  /use-debounce/8.0.4:
-    resolution: {integrity: sha512-fGqsYQzl8kLHF2QpQSgIwgOgJmnh6j5L6SIzQiHdLfwp3q1egUL3btq5Bg2SJysH6A0ILLgT2IqXZKoNJr0nFw==}
-    engines: {node: '>= 10.0.0'}
-    peerDependencies:
-      react: '>=16.8.0'
     dev: false
 
   /use-debounce/8.0.4_react@18.1.0:
