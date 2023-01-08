@@ -1,7 +1,6 @@
 import { useReducer } from 'react';
 import { View } from 'react-native';
-import { filterReducer, initialFilterState } from './filter';
-import { Filter } from './components/Filter';
+import { Filter, filterReducer, initialFilterState } from './components/Filter';
 import { Recommendations } from './components/Recommendations';
 
 export function Discover() {

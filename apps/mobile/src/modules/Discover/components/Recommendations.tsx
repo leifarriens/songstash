@@ -4,7 +4,7 @@ import { IOScrollView } from 'react-native-intersection-observer';
 import shallow from 'zustand/shallow';
 import { trpc } from '../../../utils/trpc';
 import { useAudioStore } from '../store';
-import { FilterState } from '../filter';
+import { FilterState } from './Filter';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { Track } from './Track';
 

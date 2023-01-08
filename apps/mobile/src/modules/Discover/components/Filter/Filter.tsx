@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import classNames from 'classnames';
 import { Ionicons } from '@expo/vector-icons';
-import { trpc } from '../../../utils/trpc';
-import { FilterAction, FilterState } from '../filter';
+import { trpc } from '../../../../utils/trpc';
+import { FilterAction, FilterState } from './filter-reducer';
 
 interface FilterProps {
   filters: FilterState;
@@ -73,7 +73,7 @@ export function Filter({ filters, dispatch }: FilterProps) {
           />
         ))}
 
-        {/* {filters.genres.length > 0 && (
+        {/* {numberOfFilters > 0 && (
           <Text className="text-white text-2xl mr-1">|</Text>
         )} */}
 
@@ -98,7 +98,6 @@ export function Filter({ filters, dispatch }: FilterProps) {
               }
             })
             .sort((a, b) => {
-              // return a.localeCompare(b);
               return a.length - b.length;
             })
             .map((genre) => (
