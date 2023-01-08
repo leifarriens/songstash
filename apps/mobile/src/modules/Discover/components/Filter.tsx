@@ -62,15 +62,6 @@ export function Filter({ filters, dispatch }: FilterProps) {
         contentContainerStyle={{ alignItems: 'center' }}
         className="flex py-3"
       >
-        {numberOfFilters > 0 && (
-          <TouchableOpacity
-            onPress={() => dispatch({ type: 'RESET' })}
-            className="flex flex-row items-center rounded-lg py-1 mr-1"
-          >
-            <Ionicons name="close-circle" size={24} color="white" />
-          </TouchableOpacity>
-        )}
-
         {filters.genres.reverse().map((genre) => (
           <GenreBadge
             key={genre}
@@ -82,8 +73,17 @@ export function Filter({ filters, dispatch }: FilterProps) {
           />
         ))}
 
-        {filters.genres.length > 0 && (
+        {/* {filters.genres.length > 0 && (
           <Text className="text-white text-2xl mr-1">|</Text>
+        )} */}
+
+        {numberOfFilters > 0 && (
+          <TouchableOpacity
+            onPress={() => dispatch({ type: 'RESET' })}
+            className="flex flex-row items-center rounded-lg py-1 mr-1"
+          >
+            <Ionicons name="close-circle" size={24} color="white" />
+          </TouchableOpacity>
         )}
 
         {data &&

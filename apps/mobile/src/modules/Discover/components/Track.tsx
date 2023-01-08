@@ -22,67 +22,64 @@ interface TrackProps {
     track: SpotifyApi.RecommendationTrackObject,
     inView: boolean,
   ) => void;
+  onPress: () => void;
 }
 
-export function Track({ track, height, onInViewChange }: TrackProps) {
-  const { currentTrack, progress } = useAudioStore();
+export function Track({ track, height, onInViewChange, onPress }: TrackProps) {
+  const currentTrack = useAudioStore((state) => state.currentTrack);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const isCurrent = track.id === currentTrack?.id;
 
   const toggleBookmark = () => setIsBookmarked((curr) => !curr);
 
   const doubleTab = Gesture.Tap().numberOfTaps(2).onStart(toggleBookmark);
+  const tab = Gesture.Tap().onStart(() => onPress());
 
   return (
-    <InView
-      key={track.id}
-      className="relative flex justify-center items-center"
-      style={{ height }}
-      onChange={(inView) => onInViewChange(track, inView)}
-    >
-      <TouchableWithoutFeedback onPress={() => console.log('hi')}>
-        <>
-          <ImageBackground
-            blurRadius={8}
-            resizeMode="cover"
-            source={{ uri: track.album.images[2].url }}
-            className="absolute inset-0 opacity-40"
-          />
-          <View className="flex justify-center items-center px-8 pt-8">
-            <View style={styles.shadow}>
-              <GestureDetector gesture={doubleTab}>
-                <Image
-                  source={{ uri: track.album.images[1].url }}
-                  className="w-64 h-64 bg-neutral-500 mb-4"
-                />
-              </GestureDetector>
-            </View>
-            <View className="flex items-center">
-              <ArtistLinks artists={track.artists} />
+    <GestureDetector gesture={tab}>
+      <InView
+        key={track.id}
+        className="relative flex justify-center items-center"
+        style={{ height }}
+        onChange={(inView) => onInViewChange(track, inView)}
+      >
+        <ImageBackground
+          blurRadius={8}
+          resizeMode="cover"
+          source={{ uri: track.album.images[2].url }}
+          className="absolute inset-0 opacity-40"
+        />
+        <View className="flex justify-center items-center px-8 pt-8">
+          <View style={styles.shadow}>
+            <GestureDetector gesture={doubleTab}>
+              <Image
+                source={{ uri: track.album.images[1].url }}
+                className="w-64 h-64 bg-neutral-500 mb-4"
+              />
+            </GestureDetector>
+          </View>
+          <View className="flex items-center">
+            <ArtistLinks artists={track.artists} />
 
-              <TouchableOpacity onPress={() => Linking.openURL(track.uri)}>
-                <Text className="text-white text-2xl font-bold text-center">
-                  {track.name}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {/* <Progress.Pie
-              color="#e5e5e5"
-              borderWidth={0}
-              progress={isCurrent ? progress : 0}
-              size={36}
-            />
-            <TouchableOpacity onPress={toggleBookmark}>
+            <TouchableOpacity
+              onPress={() => Linking.openURL(track.external_urls.spotify)}
+            >
+              <Text className="text-white text-2xl font-bold text-center">
+                {track.name}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {isCurrent ? <ProgressIndicator /> : <View style={{ height: 36 }} />}
+          {/* <TouchableOpacity onPress={toggleBookmark}>
               <Ionicons
                 name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
                 size={36}
                 color="white"
               />
             </TouchableOpacity> */}
-          </View>
-        </>
-      </TouchableWithoutFeedback>
-    </InView>
+        </View>
+      </InView>
+    </GestureDetector>
   );
 }
 
@@ -107,10 +104,13 @@ interface ArtistLinkProps {
 function ArtistLinks({ artists }: ArtistLinkProps) {
   return (
     <View className="flex flex-row">
-      {artists.map(({ id, name, uri }, i) => {
+      {artists.map(({ id, name, external_urls }, i) => {
         const isLast = i + 1 === artists.length;
         return (
-          <TouchableOpacity key={id} onPress={() => Linking.openURL(uri)}>
+          <TouchableOpacity
+            key={id}
+            onPress={() => Linking.openURL(external_urls.spotify)}
+          >
             <Text className="text-lg text-neutral-400">
               {name}
               {!isLast && ', '}
@@ -119,5 +119,18 @@ function ArtistLinks({ artists }: ArtistLinkProps) {
         );
       })}
     </View>
+  );
+}
+
+function ProgressIndicator() {
+  const progress = useAudioStore((state) => state.progress);
+  const isPlaying = useAudioStore((state) => state.isPlaying);
+  return (
+    <Progress.Pie
+      color={isPlaying ? 'rgba(229, 229, 229, 0.8)' : 'rgba(100,100,100,0.5)'}
+      borderWidth={0}
+      progress={progress}
+      size={36}
+    />
   );
 }

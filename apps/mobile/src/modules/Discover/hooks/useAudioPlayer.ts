@@ -4,7 +4,8 @@ import { useAudioStore } from '../store';
 
 export function useAudioPlayer() {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const { updatePlayback } = useAudioStore();
+  const updatePlayback = useAudioStore((state) => state.updatePlayback);
+  const setIsPlaying = useAudioStore((state) => state.setIsPlaying);
 
   useEffect(() => {
     return sound
@@ -36,11 +37,28 @@ export function useAudioPlayer() {
     setSound(sound);
 
     await sound.playAsync();
+    setIsPlaying(true);
+  }
+
+  async function togglePlayback() {
+    if (sound) {
+      const status = await sound.getStatusAsync();
+      if (status.isLoaded) {
+        if (status.isPlaying) {
+          await sound?.pauseAsync();
+          setIsPlaying(false);
+        } else {
+          await sound.playAsync();
+          setIsPlaying(true);
+        }
+      }
+    }
   }
 
   function unloadTrack() {
     setSound(null);
+    setIsPlaying(false);
   }
 
-  return { playTrack, unloadTrack };
+  return { sound, playTrack, togglePlayback, unloadTrack };
 }
