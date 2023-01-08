@@ -1,10 +1,9 @@
 import { trpc } from '@utils/trpc';
 import { Audio } from 'react-loader-spinner';
 import { Track } from './Track';
-import { AudioPlayer } from '@components/AudioPlayer';
+import { AudioPlayer, useAudioPlayerStore } from '@components/AudioPlayer';
 import { Button } from '@components/ui';
-import { useState } from 'react';
-import { FilterState } from '../filter';
+import { useEffect } from 'react';
 
 interface RecommendationsProps {
   genres: string[];

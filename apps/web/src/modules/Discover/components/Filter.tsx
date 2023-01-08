@@ -16,8 +16,7 @@ export function Filter({
 }) {
   const [filterQuery, setFilterQuery] = useState('');
 
-  const numberOfFilters =
-    Array.from(filters.genres).length + Array.from(filters.artists).length;
+  const numberOfFilters = filters.genres.length + filters.artists.length;
 
   function handleClear() {
     setFilterQuery('');
@@ -44,14 +43,14 @@ export function Filter({
               }
             })
             .map((g) => {
-              const selected = Array.from(filters.genres).includes(g);
+              const selected = filters.genres.includes(g);
               const dispatchType = selected ? 'REMOVE_GENRE' : 'ADD_GENRE';
               return (
                 <button
                   key={g}
                   className={classNames(
-                    'mb-1 py-1 px-2 text-sm text-neutral-300 bg-neutral-800 rounded-md hover:bg-neutral-600 hover:text-white',
-                    { 'bg-neutral-600': selected },
+                    'mb-1 py-1 px-2 text-sm text-neutral-200 bg-neutral-800 rounded-md hover:bg-neutral-600',
+                    { 'bg-pink-700 text-white': selected },
                   )}
                   onClick={() => dispatch({ type: dispatchType, payload: g })}
                 >
@@ -72,7 +71,7 @@ export function Filter({
       {numberOfFilters > 0 && (
         <div className="my-6">
           <div className="mb-2 text-neutral-200 text-sm">Results based on:</div>
-          {Array.from(filters.artists).map(({ id, name }) => (
+          {filters.artists.map(({ id, name }) => (
             <span
               key={id}
               className="inline-flex gap-1 bg-neutral-600 mr-2 mb-2 py-1 px-2 rounded-md bg-opacity-60"
@@ -85,7 +84,7 @@ export function Filter({
               </button>
             </span>
           ))}
-          {Array.from(filters.genres).map((genre) => (
+          {filters.genres.map((genre) => (
             <span
               key={genre}
               className="inline-flex gap-1 bg-neutral-600 mr-2 mb-2 py-1 px-2 rounded-md bg-opacity-60"

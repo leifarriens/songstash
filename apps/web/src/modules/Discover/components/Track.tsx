@@ -6,9 +6,8 @@ interface TrackProps {
 }
 
 export function Track({ track }: TrackProps) {
-  const audio = useAudioPlayerStore();
-
-  const isPlaying = audio.src === track.preview_url;
+  const src = useAudioPlayerStore((state) => state.src);
+  const isPlaying = src === track.preview_url;
 
   const image = track.album.images[2];
 
@@ -54,7 +53,7 @@ export function Track({ track }: TrackProps) {
             </div>
           </div>
 
-          {track.preview_url && <PlayButton src={track.preview_url} />}
+          {track.preview_url && <PlayButton sourceUrl={track.preview_url} />}
         </div>
       </div>
     </div>
