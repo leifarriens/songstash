@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/leifarriens/songstash/issues"
   },
-  "homepage": "https://github.com/leifarriens/songstash#readme"
+  "homepage": "https://github.com/leifarriens/songstash#readme",
+  "devDependencies": {
+    "prettier": "^2.8.2"
+  }
 }
