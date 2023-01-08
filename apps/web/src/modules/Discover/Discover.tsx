@@ -20,8 +20,8 @@ export function Discover({ genres }: { genres: string[] }) {
       <Filter genres={genres} filters={filters} dispatch={dispatch} />
 
       <Recommendations
-        genres={Array.from(filters.genres)}
-        artists={Array.from(filters.artists).map((a) => a.id)}
+        genres={filters.genres}
+        artists={filters.artists.map((a) => a.id)}
       />
     </div>
   );

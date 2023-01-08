@@ -17,9 +17,9 @@ export function AudioPlayer({ playlist }: AudioPlayerProps) {
   }, []);
 
   useEffect(() => {
-    // NOTE: Prevents audio from resuming after remounting
+    // NOTE: Prevents audio from resuming after data changes
     stop();
-  }, [stop]);
+  }, [playlist, stop]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
