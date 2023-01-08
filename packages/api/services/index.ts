@@ -1,43 +1,11 @@
 import SpotifyWebApi from 'spotify-web-api-node';
 
-import { prisma } from '../db/client';
+import { getAccessToken } from './token';
 
-const spotifyApi = new SpotifyWebApi({
+export const spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_CLIENT_ID,
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
 });
-
-export async function getAccessToken() {
-  const currentToken = spotifyApi.getAccessToken();
-
-  // HACK: should fail when when currentToken has expired
-  if (currentToken) return;
-
-  const token = await prisma.token.findFirst({
-    where: {
-      expires: { gt: new Date() },
-    },
-  });
-
-  if (token) {
-    spotifyApi.setAccessToken(token.content);
-    return;
-  }
-
-  const {
-    body: { access_token, expires_in },
-  } = await spotifyApi.clientCredentialsGrant();
-
-  const newToken = await prisma.token.create({
-    data: {
-      content: access_token,
-      expires: new Date(Date.now() + expires_in * 1000),
-    },
-  });
-
-  spotifyApi.setAccessToken(newToken.content);
-  return;
-}
 
 export async function getArtist(artistId: string) {
   await getAccessToken();
