@@ -1,15 +1,11 @@
 import { Dispatch, useEffect, useRef, useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-} from 'react-native';
-import classNames from 'classnames';
+import { View, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { trpc } from '../../../../utils/trpc';
 import { FilterAction, FilterState } from './filter-reducer';
+import React from 'react';
+import ArtistsFilter from './ArtistsFilter/ArtistsFilter';
+import GenresFilter from './GenresFilter/GenresFilter';
+import { Badge } from './Badge';
 
 interface FilterProps {
   filters: FilterState;
@@ -17,24 +13,21 @@ interface FilterProps {
 }
 
 export function Filter({ filters, dispatch }: FilterProps) {
-  const genreScrollRef = useRef<ScrollView | null>(null);
+  const scrollRef = useRef<ScrollView | null>(null);
   const [filterQuery, setFilterQuery] = useState('');
 
-  const numberOfFilters = filters.genres.length;
-
-  const { data } = trpc.genres.useQuery(undefined, {
-    staleTime: Infinity,
-  });
+  const numberOfFilters = filters.genres.length + filters.artists.length;
+  const maxFilters = numberOfFilters >= 5;
 
   useEffect(() => {
-    genreScrollRef.current?.scrollTo({
+    scrollRef.current?.scrollTo({
       x: 0,
       animated: true,
     });
   }, [filters.genres]);
 
-  function handleFilterInputFocus() {
-    genreScrollRef.current?.scrollTo({
+  function handleInputFocus() {
+    scrollRef.current?.scrollTo({
       x: 0,
       animated: true,
     });
@@ -43,99 +36,77 @@ export function Filter({ filters, dispatch }: FilterProps) {
   return (
     <View className="absolute top-16 z-20 px-3 w-full">
       <TextInput
-        placeholder="Search genres..."
-        className="px-3 bg-neutral-800 rounded-xl text-white"
+        placeholder={
+          maxFilters
+            ? 'Maximum number of filters'
+            : 'Search genres or artists...'
+        }
+        editable={!maxFilters}
+        className="px-3 rounded-xl text-white"
         clearButtonMode="always"
         value={filterQuery}
         onChangeText={setFilterQuery}
-        onFocus={handleFilterInputFocus}
+        onFocus={handleInputFocus}
         style={{
           fontSize: 18,
           paddingVertical: 10,
-          backgroundColor: 'rgba(55, 55, 55,0.95)',
+          backgroundColor: 'rgba(25, 25, 25,0.95)',
         }}
       />
 
       <ScrollView
-        ref={genreScrollRef}
+        ref={scrollRef}
         horizontal={true}
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ alignItems: 'center' }}
         className="flex py-3"
       >
-        {filters.genres.reverse().map((genre) => (
-          <GenreBadge
-            key={genre}
-            genre={genre}
-            selected={filters.genres.includes(genre)}
-            onPress={(genre) =>
-              dispatch({ type: 'REMOVE_GENRE', payload: genre })
+        {filters.artists.map((artist) => (
+          <Badge
+            key={artist.id}
+            artist={artist}
+            selected={true}
+            onPress={() =>
+              dispatch({ type: 'REMOVE_ARTIST', payload: artist.id })
             }
           />
         ))}
 
-        {/* {numberOfFilters > 0 && (
-          <Text className="text-white text-2xl mr-1">|</Text>
-        )} */}
+        {filters.genres.map((genre) => (
+          <Badge
+            key={genre}
+            genre={genre}
+            selected={filters.genres.includes(genre)}
+            onPress={() => dispatch({ type: 'REMOVE_GENRE', payload: genre })}
+          />
+        ))}
 
         {numberOfFilters > 0 && (
           <TouchableOpacity
             onPress={() => dispatch({ type: 'RESET' })}
             className="flex flex-row items-center rounded-lg py-1 mr-1"
           >
-            <Ionicons name="close-circle" size={24} color="white" />
+            <Ionicons name="close-circle" size={26} color="white" />
           </TouchableOpacity>
         )}
 
-        {data &&
-          data
-            .filter((g) => {
-              return !filters.genres.includes(g);
-            })
-            .filter((g) => {
-              if (!filterQuery) return !g.includes('-');
-              if (filterQuery !== '') {
-                return g.includes(filterQuery.toLowerCase());
-              }
-            })
-            .sort((a, b) => {
-              return a.length - b.length;
-            })
-            .map((genre) => (
-              <GenreBadge
-                key={genre}
-                genre={genre}
-                onPress={(genre) => {
-                  dispatch({ type: 'ADD_GENRE', payload: genre });
-                  setFilterQuery('');
-                }}
-              />
-            ))}
+        <GenresFilter
+          query={filterQuery}
+          filters={filters}
+          onGenrePress={(genre) => {
+            dispatch({ type: 'ADD_GENRE', payload: genre });
+            setFilterQuery('');
+          }}
+        />
       </ScrollView>
-    </View>
-  );
-}
 
-function GenreBadge({
-  genre,
-  selected,
-  onPress,
-}: {
-  genre: string;
-  selected?: boolean;
-  onPress: (genre: string) => void;
-}) {
-  return (
-    <TouchableOpacity
-      className={classNames(
-        'flex flex-row items-center bg-neutral-800 rounded-lg px-2 py-1 mr-1',
-        {
-          'bg-pink-700': selected,
-        },
-      )}
-      onPress={() => onPress(genre)}
-    >
-      <Text className="text-neutral-300 text-lg">{genre}</Text>
-      {selected && <Ionicons name="close" size={18} color="white" />}
-    </TouchableOpacity>
+      <ArtistsFilter
+        query={filterQuery}
+        onArtistPress={(artist) => {
+          dispatch({ type: 'ADD_ARTIST', payload: artist });
+          setFilterQuery('');
+        }}
+      />
+    </View>
   );
 }
