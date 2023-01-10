@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Dimensions, RefreshControl, View, Text } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Dimensions, ScrollView } from 'react-native';
 import { IOScrollView } from 'react-native-intersection-observer';
 import shallow from 'zustand/shallow';
 import { trpc } from '../../../utils/trpc';
@@ -7,16 +7,18 @@ import { useAudioStore } from '../store';
 import { FilterState } from './Filter';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { Track } from './Track';
+import { TrackRecommendation } from '@songstash/api';
 
 interface RecommendationsProps {
   filters: FilterState;
 }
 
 export function Recommendations({ filters }: RecommendationsProps) {
+  const ioScrollViewRef = useRef<ScrollView | null>(null);
+  // const [scroll, setScroll] = useState(0);
   // const [isScrolling, setIsScrolling] = useState(false);
   const height = Dimensions.get('window').height;
-  const [nextTrack, setNextTrack] =
-    useState<SpotifyApi.RecommendationTrackObject | null>(null);
+  const [nextTrack, setNextTrack] = useState<TrackRecommendation | null>(null);
   const { currentTrack, setCurrentTrack } = useAudioStore(
     (state) => ({
       currentTrack: state.currentTrack,
@@ -25,46 +27,46 @@ export function Recommendations({ filters }: RecommendationsProps) {
     shallow,
   );
 
-  const { playTrack, unloadTrack, togglePlayback } = useAudioPlayer();
+  const { playTrack, unloadTrack, pause, resume } = useAudioPlayer({
+    loop: true,
+  });
 
-  const { data, isFetching, refetch } = trpc.recommendations.useQuery(
+  const { data } = trpc.recommendations.useQuery(
     {
       genres: filters.genres,
-      artists: [],
+      artists: filters.artists.map(({ id }) => id),
       limit: 30,
     },
     {
       staleTime: Infinity,
-      enabled: filters.genres.length > 0,
+      enabled: filters.genres.length + filters.artists.length > 0,
+      trpc: { abortOnUnmount: true },
     },
   );
 
   useEffect(() => {
+    unloadTrack();
     setCurrentTrack(null);
     setNextTrack(null);
-
-    unloadTrack();
-  }, [filters, data]);
+    // FIXME: breaks rules of hooks
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   // play track on currentTrack track change
   useEffect(() => {
     if (currentTrack) {
       playTrack(currentTrack);
     }
-  }, [currentTrack]);
+  }, [currentTrack, playTrack]);
 
-  useEffect(() => {
-    // Play next track if no current Track
-    if (nextTrack && !currentTrack) {
-      setCurrentTrack(nextTrack);
-    }
-  }, [nextTrack]);
-
-  function handleTrackInViewChange(
-    track: SpotifyApi.RecommendationTrackObject,
+  async function handleTrackInViewChange(
+    track: TrackRecommendation,
     inView: boolean,
   ) {
     if (inView) {
+      if (!currentTrack) {
+        setCurrentTrack(track);
+      }
       setNextTrack(track);
     }
 
@@ -77,9 +79,11 @@ export function Recommendations({ filters }: RecommendationsProps) {
   }
 
   // TODO: Add autoplay on track end, scrollview ref?
+  // FIXME: Fast scrolling breaks audio player & current track state
   return (
     <>
       <IOScrollView
+        ref={ioScrollViewRef}
         className="bg-black mb-2"
         // onScrollBeginDrag={() => setIsScrolling(true)}
         // onScrollEndDrag={() => setIsScrolling(false)}
@@ -87,13 +91,6 @@ export function Recommendations({ filters }: RecommendationsProps) {
         snapToAlignment="center"
         decelerationRate="fast"
         showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={() => refetch()}
-            tintColor="white"
-          />
-        }
       >
         {data &&
           data.map((track) => (
@@ -102,7 +99,8 @@ export function Recommendations({ filters }: RecommendationsProps) {
               height={height}
               track={track}
               onInViewChange={handleTrackInViewChange}
-              onPress={() => togglePlayback()}
+              onLongPressStart={() => pause()}
+              onLongPressEnd={() => resume()}
             />
           ))}
       </IOScrollView>

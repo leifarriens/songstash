@@ -5,38 +5,47 @@ import {
   Text,
   TouchableOpacity,
   Linking,
-  TouchableWithoutFeedback,
   StyleSheet,
 } from 'react-native';
 import { InView } from 'react-native-intersection-observer';
 import * as Progress from 'react-native-progress';
-import { Ionicons } from '@expo/vector-icons';
 import { useAudioStore } from '../store';
 import { useState } from 'react';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { TrackRecommendation } from '@songstash/api';
 
 interface TrackProps {
-  track: SpotifyApi.RecommendationTrackObject;
+  track: TrackRecommendation;
   height: number;
-  onInViewChange: (
-    track: SpotifyApi.RecommendationTrackObject,
-    inView: boolean,
-  ) => void;
-  onPress: () => void;
+  onInViewChange: (track: TrackRecommendation, inView: boolean) => void;
+  onPress?: () => void;
+  onLongPress?: () => void;
+  onLongPressStart?: () => void;
+  onLongPressEnd?: () => void;
 }
 
-export function Track({ track, height, onInViewChange, onPress }: TrackProps) {
+export function Track({
+  track,
+  height,
+  onInViewChange,
+  onLongPressStart,
+  onLongPressEnd,
+}: TrackProps) {
   const currentTrack = useAudioStore((state) => state.currentTrack);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [, setIsBookmarked] = useState(false);
   const isCurrent = track.id === currentTrack?.id;
+  const cover = track.album.images[1];
 
   const toggleBookmark = () => setIsBookmarked((curr) => !curr);
 
   const doubleTab = Gesture.Tap().numberOfTaps(2).onStart(toggleBookmark);
-  const tab = Gesture.Tap().onStart(() => onPress());
+  const longPress = Gesture.LongPress()
+    .minDuration(300)
+    .onStart(() => onLongPressStart && onLongPressStart())
+    .onEnd(() => onLongPressEnd && onLongPressEnd());
 
   return (
-    <GestureDetector gesture={tab}>
+    <GestureDetector gesture={longPress}>
       <InView
         key={track.id}
         className="relative flex justify-center items-center"
@@ -47,13 +56,13 @@ export function Track({ track, height, onInViewChange, onPress }: TrackProps) {
           blurRadius={8}
           resizeMode="cover"
           source={{ uri: track.album.images[2].url }}
-          className="absolute inset-0 opacity-40"
+          className="absolute inset-0 opacity-50"
         />
         <View className="flex justify-center items-center px-8 pt-8">
           <View style={styles.shadow}>
             <GestureDetector gesture={doubleTab}>
               <Image
-                source={{ uri: track.album.images[1].url }}
+                source={{ uri: cover.url, cache: 'force-cache' }}
                 className="w-64 h-64 bg-neutral-500 mb-4"
               />
             </GestureDetector>
@@ -103,7 +112,7 @@ interface ArtistLinkProps {
 
 function ArtistLinks({ artists }: ArtistLinkProps) {
   return (
-    <View className="flex flex-row">
+    <View className="flex flex-row flex-wrap justify-center">
       {artists.map(({ id, name, external_urls }, i) => {
         const isLast = i + 1 === artists.length;
         return (

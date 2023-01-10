@@ -1,8 +1,9 @@
 import create from 'zustand';
 import { AVPlaybackStatusSuccess } from 'expo-av';
+import { TrackRecommendation } from '@songstash/api';
 
 type AudioUpdate = AVPlaybackStatusSuccess;
-export type Track = SpotifyApi.RecommendationTrackObject | null;
+export type Track = TrackRecommendation | null;
 
 interface AudioState {
   currentTrack: Track;
